@@ -37,6 +37,7 @@ describe('AWS - S3 Integration Test', () => {
           config.functions.minimal.events[0].s3 = bucketMinimalSetup;
           config.functions.extended.events[0].s3.bucket = bucketExtendedSetup;
           config.functions.existing.events[0].s3.bucket = bucketExistingSetup;
+          config.functions.existing.events[1].s3.bucket = bucketExistingSetup;
         },
     });
     serviceName = serverlessConfig.service;
@@ -100,6 +101,20 @@ describe('AWS - S3 Integration Test', () => {
         .then(logs => {
           expect(/aws:s3/g.test(logs)).to.equal(true);
           expect(/ObjectCreated:Put/g.test(logs)).to.equal(true);
+          expect(logs.includes(expectedMessage)).to.equal(true);
+        });
+    });
+
+    it('should invoke function when an object is removed', () => {
+      const functionName = 'existing';
+      const markers = getMarkers(functionName);
+      const expectedMessage = `Hello from S3! - (${functionName})`;
+
+      return createAndRemoveInBucket(bucketExistingSetup, { prefix: 'Files/', suffix: '.TXT' })
+        .then(() => waitForFunctionLogs(functionName, markers.start, markers.end))
+        .then(logs => {
+          expect(/aws:s3/g.test(logs)).to.equal(true);
+          expect(/ObjectRemoved:Delete/g.test(logs)).to.equal(true);
           expect(logs.includes(expectedMessage)).to.equal(true);
         });
     });
