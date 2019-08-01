@@ -1,0 +1,1 @@
+sudo pwsh -Command "New-AWSPowerShellLambdaPackage -ScriptPath ./handler.ps1 -StagingDirectory bin -OutputPackage bin/hello.zip"
