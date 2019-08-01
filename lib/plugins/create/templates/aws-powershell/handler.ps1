@@ -5,7 +5,7 @@ $body = @{
     input = $LambdaInput
 }
 
-#The last object output to stdout during the exeuction of the PowerShell script will be returned as the lambda response
+#The last object output to stdout during the execution of the PowerShell script will be returned as the lambda response
 
 @{
     statusCode = 200
